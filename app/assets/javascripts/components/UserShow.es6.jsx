@@ -1,9 +1,16 @@
 class UserShow extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { user: this.props.user, preferences: this.props.user.preferences }
+    this.state = {
+      user: this.props.user,
+      preferences: this.props.user.preferences,
+      formPresent: false
+    }
+
     this.updateUser = this.updateUser.bind(this)
     this.showPreferences = this.showPreferences.bind(this)
+    this.toggleForm = this.toggleForm.bind(this)
+    this.showForm = this.showForm.bind(this)
   }
 
   updateUser(response) {
@@ -18,6 +25,26 @@ class UserShow extends React.Component {
       return(<p>{pref.looking_for}</p>)
 
     }))
+  }
+
+  toggleForm() {
+    let shouldToggle = !this.state.formPresent
+    this.setState({
+      formPresent: shouldToggle
+    })
+    // debugger
+    if (shouldToggle) {
+      return this.showForm()
+    }
+  }
+
+  showForm() {
+    // debugger
+    if (this.state.formPresent) {
+      return(<ProfileEditForm onUpdate={this.updateUser} user={this.state.user}/>)
+    } else {
+      return null
+    }
   }
 
 
@@ -35,7 +62,8 @@ class UserShow extends React.Component {
         <p>Ages {user.min_age_choice} to {user.max_age_choice}</p>
         {this.showPreferences()}
         <p>{user.about}</p>
-        <ProfileEditForm onUpdate={this.updateUser} user={this.state.user}/>
+        <button onClick={this.toggleForm}>Edit</button>
+        {this.showForm()}
       </div>
     )
   }
